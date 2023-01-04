@@ -5,7 +5,7 @@ using LinearAlgebra
 using SparseArrays
 using Test
 
-isapprox(a::Int, b::Int) = abs(a - b) <= 9
+iseq(a::Int, b::Int) = abs(a - b) <= 9
 
 @testset "FallbackTests" begin
 
@@ -25,7 +25,9 @@ isapprox(a::Int, b::Int) = abs(a - b) <= 9
             @test ==(getproperty(c_del, name), getproperty(c_tra, name))
             @test ==(getproperty(c_del, name), getproperty(c_tty, name))
         end
-        @test length(c_del.code) ≈ length(c_tra.code) ≈ length(c_tty.code) > 5
+        @test iseq(length(c_del.code), length(c_tra.code))
+        @test iseq(length(c_del.code), length(c_tty.code))
+        @test length(c_tty.code) > 5
     end
 
     @testset "sameresult $(typeof(M)) $f" for M in (A, B, C, D),
