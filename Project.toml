@@ -1,0 +1,7 @@
+name = "AbsArrFallbackTrap"
+uuid = "df276cbc-0f70-4538-9ccc-82f2aba363e2"
+authors = ["KlausC <klausC@users.noreply.github.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.5"
