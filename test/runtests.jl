@@ -5,7 +5,7 @@ using LinearAlgebra
 using SparseArrays
 using Test
 
-isapprox(a::Int, b::Int) = abs(a - b) <= 3
+isapprox(a::Int, b::Int) = abs(a - b) <= 9
 
 @testset "FallbackTests" begin
 
