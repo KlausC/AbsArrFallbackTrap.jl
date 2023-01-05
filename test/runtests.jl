@@ -38,7 +38,7 @@ end
         @test f(M) ≈ sum(M)
     end
 
-    @testset "wrappers $W" for W in (LowerTriangular, Adjoint, Symmetric)
+    @testset "wrappers $W" for W in (LowerTriangular, Adjoint, Symmetric, Tridiagonal)
         @test usum_del(W(B)) ≈ usum_del(W(A))
         @test usum_del(W(C)) ≈ usum_del(W(D))
     end
