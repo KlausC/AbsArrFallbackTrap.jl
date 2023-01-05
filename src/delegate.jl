@@ -11,15 +11,15 @@ function usum_del(A::AbstractMatrix)
 end
 
 # DTrait based implementations for 3 use cases
-function imp(D::DTrait{<:AbstractMatrix,DefaultImplementationType})
+function imp(D::DTrait{<:AbstractMatrix,<:DefaultImplementationType})
     _usum_loop(D[])
 end
 
-function imp(D::DTrait{<:SparseMatrixCSC,SparseCSCImplementationType})
+function imp(D::DTrait{<:SparseMatrixCSC,<:SparseImplementationType})
     _usum_loop(nonzeros(D[]))
 end
 
-function imp(D::DTrait{<:AbstractMatrix,SparseCSCImplementationType})
+function imp(D::DTrait{<:AbstractMatrix,<:SparseImplementationType})
     _usum_loop(nonzeros(sparse(D[])))
 end
 
@@ -46,11 +46,11 @@ function imp(A::AbstractMatrix, ::Union{T,Type{T}}) where {T<:DefaultImplementat
     _usum_loop(A)
 end
 
-function imp(A::SparseMatrixCSC, ::Union{T,Type{T}}) where {T<:SparseCSCImplementationType}
+function imp(A::SparseMatrixCSC, ::Union{T,Type{T}}) where {T<:SparseImplementationType}
     _usum_loop(nonzeros(A))
 end
 
-function imp(A::AbstractMatrix, ::Union{T,Type{T}}) where {T<:SparseCSCImplementationType}
+function imp(A::AbstractMatrix, ::Union{T,Type{T}}) where {T<:SparseImplementationType}
     _usum_loop(nonzeros(sparse(A)))
 end
 

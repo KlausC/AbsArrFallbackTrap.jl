@@ -16,10 +16,11 @@ end
 
     B = sprand(100, 100, 0.1)
     A = Matrix(B)
-    C = view(A, 2:99, :)
-    D = view(B, 2:99, :)
+    C = view(A, 2:99, 3:100)
+    D = view(B, 2:99, 3:100)
 
     # check that compiler creates similar code for the 3 variants
+    # no code is generated for the traits objects in either case
     @testset "samecode $(typeof(M))" for M in (A, B, C, D)
         T = Tuple{typeof(M)}
         c_del = filter_code_typed(usum_del, T)
@@ -35,6 +36,11 @@ end
         f in (usum_del, usum_trait, usum_traittype)
 
         @test f(M) ≈ sum(M)
+    end
+
+    @testset "wrappers $W" for W in (LowerTriangular, Adjoint, Symmetric)
+        @test usum_del(W(B)) ≈ usum_del(W(A))
+        @test usum_del(W(C)) ≈ usum_del(W(D))
     end
 end
 

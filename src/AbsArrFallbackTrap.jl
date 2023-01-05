@@ -5,15 +5,15 @@ export ImplementationType, DefaultImplementationType
 export DTrait, implementation_type
 
 abstract type ImplementationType end
-struct DefaultImplementationType <: ImplementationType end
+struct DefaultImplementationType{M} <: ImplementationType end
 
 """
     implementation_type(::Type{<:AbstractArray})
 
 Return datatype for given array type.
 """
-implementation_type(::Type) = DefaultImplementationType
-implementation_type(::T) where T = implementation_type(T)
+implementation_type(::Type{M}) where M = DefaultImplementationType{M}
+implementation_type(::T) where {T} = implementation_type(T)
 
 """
     implementation_trait(::Type{<:AbstractArray})
@@ -34,7 +34,7 @@ which is used as the second type parameter of `DTrait`.
 """
 struct DTrait{M,I}
     x::M
-    DTrait(A::M, f) where M = new{M,f(A)}(A)
+    DTrait(A::M, f) where {M} = new{M,f(A)}(A)
 end
 DTrait(A::Any) = DTrait(A, implementation_type)
 
@@ -44,8 +44,9 @@ Base.getindex(A::DTrait) = A.x
 # in module defining the wrapper types
 using LinearAlgebra
 
-for W in (:Symmetric, :Hermitian,
-    :UpperTriangular, :LowerTriangular, :UnitUpperTriangular, :UnitLowerTriangular)
+for W in (Symmetric, Hermitian,
+    LowerTriangular, UnitLowerTriangular, UpperTriangular, UnitUpperTriangular,
+    Transpose, Adjoint, Diagonal, Bidiagonal, Tridiagonal, SymTridiagonal)
     @eval implementation_type(::Type{<:$W{T,M}}) where {T,M} = implementation_type(M)
 end
 implementation_type(::Type{<:SubArray{T,N,M}}) where {T,N,M} = implementation_type(M)
@@ -56,9 +57,10 @@ using SparseArrays
 using SparseArrays: AbstractSparseMatrixCSC
 export SparseImplementationType
 
-struct SparseCSCImplementationType <: ImplementationType end
+struct SparseImplementationType{T} <: ImplementationType end
 
-implementation_type(::Type{<:AbstractSparseMatrixCSC}) = SparseCSCImplementationType
+implementation_type(::Type{M}) where M<:AbstractSparseMatrix = SparseImplementationType{M}
+implementation_type(::Type{M}) where M<:AbstractSparseVector = SparseImplementationType{M}
 # end sparse module
 
 
