@@ -59,8 +59,9 @@ export SparseImplementationType
 
 struct SparseImplementationType{T} <: ImplementationType end
 
-implementation_type(::Type{M}) where M<:AbstractSparseMatrix = SparseImplementationType{M}
-implementation_type(::Type{M}) where M<:AbstractSparseVector = SparseImplementationType{M}
+const AbstractSparseVecOrMat = Union{AbstractSparseVector, AbstractSparseMatrix}
+implementation_type(::Type{M}) where M<:AbstractSparseVecOrMat = SparseImplementationType{M}
+
 # end sparse module
 
 
