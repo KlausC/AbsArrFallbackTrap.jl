@@ -5,7 +5,12 @@ using LinearAlgebra
 using SparseArrays
 using Test
 
-iseq(a::Int, b::Int) = abs(a - b) <= 9
+iseq(a::Int, b::Int) = abs(a - b) <= 0
+
+function filter_code_typed(a, b)
+    r = code_typed(a, b)[1][1].code
+    filter(x -> !(x isa Expr && x.head == :code_coverage_effect), r)
+end
 
 @testset "FallbackTests" begin
 
@@ -17,20 +22,13 @@ iseq(a::Int, b::Int) = abs(a - b) <= 9
     # check that compiler creates similar code for the 3 variants
     @testset "samecode $(typeof(M))" for M in (A, B, C, D)
         T = Tuple{typeof(M)}
-        c_del = code_typed(usum_del, T)[1][1]
-        c_tra = code_typed(usum_trait, T)[1][1]
-        c_tty = code_typed(usum_traittype, T)[1][1]
-        println(c_del)
-        println(c_tra)
-        println(c_tty)
-        names = (:rettype, :inlineable, :pure)
-        @testset "$name" for name in names
-            @test ==(getproperty(c_del, name), getproperty(c_tra, name))
-            @test ==(getproperty(c_del, name), getproperty(c_tty, name))
-        end
-        @test iseq(length(c_del.code), length(c_tra.code))
-        @test iseq(length(c_del.code), length(c_tty.code))
-        @test length(c_tty.code) <= 10
+        c_del = filter_code_typed(usum_del, T)
+        c_tra = filter_code_typed(usum_trait, T)
+        c_tty = filter_code_typed(usum_traittype, T)
+
+        @test iseq(length(c_del), length(c_tra))
+        @test iseq(length(c_del), length(c_tty))
+        @test length(c_tty) <= 10
     end
 
     @testset "sameresult $(typeof(M)) $f" for M in (A, B, C, D),

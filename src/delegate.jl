@@ -7,20 +7,20 @@ export usum_del, usum_trait, usum_traittype
 Return sum of elements of array. User facing -> Delegates Implementation.
 """
 function usum_del(A::AbstractMatrix)
-    imp(Delegate(A))
+    imp(DTrait(A))
 end
 
-# delegate based implementations for 3 use cases
-function imp(D::Delegate{<:AbstractMatrix,DefaultImplementationType})
-    _usum_loop(D.val)
+# DTrait based implementations for 3 use cases
+function imp(D::DTrait{<:AbstractMatrix,DefaultImplementationType})
+    _usum_loop(D[])
 end
 
-function imp(D::Delegate{<:SparseMatrixCSC,SparseCSCImplementationType})
-    _usum_loop(nonzeros(D.val))
+function imp(D::DTrait{<:SparseMatrixCSC,SparseCSCImplementationType})
+    _usum_loop(nonzeros(D[]))
 end
 
-function imp(D::Delegate{<:AbstractMatrix,SparseCSCImplementationType})
-    _usum_loop(nonzeros(sparse(D.val)))
+function imp(D::DTrait{<:AbstractMatrix,SparseCSCImplementationType})
+    _usum_loop(nonzeros(sparse(D[])))
 end
 
 """
