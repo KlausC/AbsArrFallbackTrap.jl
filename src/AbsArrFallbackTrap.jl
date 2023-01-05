@@ -38,10 +38,10 @@ end
 # in module defining the wrapper types
 using LinearAlgebra
 
-implementation_type(::Type{<:Symmetric{T,M}}) where {T,M} = implementation_type(M)
-implementation_type(::Type{<:Hermitian{T,M}}) where {T,M} = implementation_type(M)
-implementation_type(::Type{<:UpperTriangular{T,M}}) where {T,M} = implementation_type(M)
-implementation_type(::Type{<:LowerTriangular{T,M}}) where {T,M} = implementation_type(M)
+for W in (:Symmetric, :Hermitian,
+    :UpperTriangular, :LowerTriangular, :UnitUpperTriangular, :UnitLowerTriangular)
+    @eval implementation_type(::Type{<:$W{T,M}}) where {T,M} = implementation_type(M)
+end
 implementation_type(::Type{<:SubArray{T,N,M}}) where {T,N,M} = implementation_type(M)
 # end wrapper module
 

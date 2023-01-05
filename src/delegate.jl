@@ -55,7 +55,7 @@ function imp(A::AbstractMatrix, ::Union{T,Type{T}}) where {T<:SparseCSCImplement
 end
 
 # incidentally identical implementation usable for all variants
-function _usum_loop(A::AbstractArray{T}) where {T}
+@noinline function _usum_loop(A::AbstractArray{T}) where {T}
     sum = zero(T)
     for i in eachindex(A)
         sum += A[i]

@@ -20,6 +20,9 @@ iseq(a::Int, b::Int) = abs(a - b) <= 9
         c_del = code_typed(usum_del, T)[1][1]
         c_tra = code_typed(usum_trait, T)[1][1]
         c_tty = code_typed(usum_traittype, T)[1][1]
+        println(c_del)
+        println(c_tra)
+        println(c_tty)
         names = (:rettype, :inlineable, :pure)
         @testset "$name" for name in names
             @test ==(getproperty(c_del, name), getproperty(c_tra, name))
@@ -27,7 +30,7 @@ iseq(a::Int, b::Int) = abs(a - b) <= 9
         end
         @test iseq(length(c_del.code), length(c_tra.code))
         @test iseq(length(c_del.code), length(c_tty.code))
-        @test length(c_tty.code) > 5
+        @test length(c_tty.code) <= 10
     end
 
     @testset "sameresult $(typeof(M)) $f" for M in (A, B, C, D),
