@@ -24,7 +24,8 @@ Once the technique is clear, a PR for `stdlib/LinearAlgebra`, `stdlib/SparseArra
 
 ## A Trait Based Approach
 
-Type dispatching is on the basis of the argument types of the methods. For deeply nested wrappers, the best available type info is `AbstractMatrix`.
+Type dispatching is on the basis of the argument types of the methods. For deeply nested wrappers, the practical available type info is `AbstractMatrix`.
+It would be unrealistic to make specialized methods for many of these unbounded number of possibilities.
 
 In order to direct the call of the unchanged API to the correct implementation method, it is necessary to use type data, which are not visible to the
 dispatching system, if only the argument type is available.
@@ -35,8 +36,8 @@ argument.
 
 This package defines `DTrait{M,Tr}`, which contains the original argument type in `M` and the additional trait data type in `Tr`.
 As it contains the original object as a member (like `Ref`), it is possible to replace each argument `a` by a single `DTrait(a)` argument.
-Experiments show, that the compiler generates the same code, when use the `DTraits` pattern is used, compared to the case when a second traits argument is
-provided. All what is needed can be done at compile time.
+Experiments show, that the compiler generates the same code, when the `DTraits` pattern is used, compared to the case when a second traits argument is
+provided. That leads to a pure static dispatching effort.
 
 ## Example
 
@@ -84,3 +85,15 @@ That means approximately 7 lines of code to be added for each method which needs
 In the `SparseArrays` stdlib package, some simplifications should be possible, where currently dynamic dispatching is used.
 See file [sparseconvert](https://github.com/JuliaSparse/SparseArrays.jl/blob/31b491e431d0b9c4e5e17fdcbbc9f71579e7c79c/src/sparseconvert.jl#L78)
 
+## Methods to change
+
+The following code snippet selects all methods, which have a supertype of `AbstractMatrix` as an argument and
+use `getindex` or `setindex!` in their implementation:
+
+```julia
+    f(m) = try callsnames(m, [:getindex, :setindex!]); catch; @warn "error $m"; true; end
+    m = methodswith(AbstractMatrix; supertypes=true)
+    sel = filter(f, m)
+```
+
+which outputs: [output-1.8.4](https://github.com/KlausC/AbsArrFallbackTrap.jl/blob/main/test/out-1.8.4.md) of 95 methods to be processed.
