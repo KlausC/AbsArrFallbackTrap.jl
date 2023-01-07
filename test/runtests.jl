@@ -44,4 +44,10 @@ end
     end
 end
 
+@testset "methods_with_getset" begin
+    m = methods_with_getset(UpperTriangular)
+    @test length(m) > 0
+end
+
+
 end # module

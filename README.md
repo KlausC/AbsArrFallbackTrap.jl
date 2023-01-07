@@ -91,9 +91,9 @@ The following code snippet selects all methods, which have a supertype of `Abstr
 use `getindex` or `setindex!` in their implementation:
 
 ```julia
-    f(m) = try callsnames(m, [:getindex, :setindex!]); catch; @warn "error $m"; true; end
-    m = methodswith(AbstractMatrix; supertypes=true)
-    sel = filter(f, m)
+    methods_with_getset(AbstractMatrix, supertypes=true)
 ```
 
-which outputs: [output-1.8.4](https://github.com/KlausC/AbsArrFallbackTrap.jl/blob/main/test/out-1.8.4.md) of 95 methods to be processed.
+which outputs:
+[output-1.8.4](https://github.com/KlausC/AbsArrFallbackTrap.jl/blob/main/test/out-1.8.4.md) of 95 methods to be processed.
+[output-1.10](https://github.com/KlausC/AbsArrFallbackTrap.jl/blob/main/test/out-1.10dev.md) of 119 methods to be processed.

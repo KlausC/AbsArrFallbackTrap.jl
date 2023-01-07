@@ -1,4 +1,6 @@
 
+using InteractiveUtils
+
 """
     code_typed(::Method; optimize=true, debuginfo::Symbol=:default) -> ::Core.CodeInfo
 
@@ -26,4 +28,20 @@ Return iff the method calls one of the functions in `s`.
 function callsnames(m::Method, s::AbstractVector{Symbol}; optimize=true)
     c = code_typed(m; optimize)
     callsnames(c, s)
+end
+
+export methods_with_getset
+"""
+    methods_with_getset(T::Type; supertypes=false)
+
+Return all methods in current methods list, which use `T` as an argument type
+and call `getindex` or `setindex!` in their implementation.
+
+Methods, that cannot be analyzed are also contained in output and a warning
+message is issued for them.
+"""
+function methods_with_getset(::Type{T}; supertypes=false) where T
+    f(m) = try callsnames(m, [:getindex, :setindex!]); catch; @warn "error $m"; true; end
+    m = methodswith(T; supertypes)
+    filter(f, m);
 end
