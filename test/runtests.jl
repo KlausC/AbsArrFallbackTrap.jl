@@ -42,12 +42,11 @@ end
         @test usum_del(W(B)) ≈ usum_del(W(A))
         @test usum_del(W(C)) ≈ usum_del(W(D))
     end
-end
 
-@testset "methods_with_getset" begin
-    m = methods_with_getset(UpperTriangular)
-    @test length(m) > 0
+    @testset "methods_with_getset" begin
+        m = methods_with_getset(UpperTriangular)
+        @test length(m) > 0
+    end
 end
-
 
 end # module
