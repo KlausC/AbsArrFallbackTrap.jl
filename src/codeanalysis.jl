@@ -40,8 +40,14 @@ and call `getindex` or `setindex!` in their implementation.
 Methods, that cannot be analyzed are also contained in output and a warning
 message is issued for them.
 """
-function methods_with_getset(::Type{T}; supertypes=false) where T
-    f(m) = try callsnames(m, [:getindex, :setindex!]); catch; @warn "error $m"; true; end
-    m = methodswith(T; supertypes)
-    filter(f, m);
+function methods_with_getset(t::Pair{<:Type,<:Type}, mf...)
+    f(m) =
+        try
+            callsnames(m, [:getindex, :setindex!])
+        catch
+            @warn "error $m"
+            true
+        end
+    m = methodsbetween(t, mf...)
+    filter(f, m)
 end

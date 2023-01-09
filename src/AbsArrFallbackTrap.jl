@@ -66,5 +66,6 @@ implementation_type(::Type{M}) where M<:AbstractSparseVecOrMat = SparseImplement
 
 
 include("delegate.jl")
+include("methods.jl")
 include("codeanalysis.jl")
 end

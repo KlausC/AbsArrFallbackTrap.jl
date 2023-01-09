@@ -87,11 +87,11 @@ See file [sparseconvert](https://github.com/JuliaSparse/SparseArrays.jl/blob/31b
 
 ## Methods to change
 
-The following code snippet selects all methods, which have a supertype of `AbstractMatrix` as an argument and
+The following code snippet selects all methods, which have a subtype of `AbstractMatrix` as an argument which is not strided or sparse and
 use `getindex` or `setindex!` in their implementation:
 
 ```julia
-    methods_with_getset(AbstractMatrix, supertypes=true)
+    methods_with_getset(Union{StridedArray,AbstractSparseArray} => AbstractMatrix, LinearAlgebra)
 ```
 
 which outputs:
@@ -110,7 +110,7 @@ julia> supertypes(Array)
 ```
 
 All those types are implemented in `C` and it would be a hard challenge to change that hierarchy, for example by trying to insert
-something above `AbstractArray`.
+something above `AbstractArray`. So we take this as a given, carved in stone so far.
 
 ### Array Types with efficient `getindex` / `setindex!`
 
@@ -141,6 +141,8 @@ julia> abstract type AbstractFastAccessArray{T,N} <: AbstractArray{T,N} end
 julia> FastArray{T,N} = Union{StridedArray{T,N}, AbstractFastAccessArray{T,N}}
 
 ```
+
+Custom subtypes of `AbstractFastAccessArray` are then included in `FastArray`.
 
 In the following we assume, that the unions `FastArray`, `FastMatrix`, `FastVector`, `FastVecOrMat` have been defined.
 The names are subject to improvement. Only the case `AbstractArray`/`FastArray` is explicitly mentionend.
