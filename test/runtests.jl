@@ -44,7 +44,7 @@ end
     end
 
     @testset "methods_with_getset" begin
-        m = methods_with_getset(Union{StridedArray,AbstractSparseArray} => UpperTriangular)
+        m = methods_with_getset(Union{StridedArray,AbstractSparseArray} => AbstractMatrix)
         @test length(m) > 0
     end
 end

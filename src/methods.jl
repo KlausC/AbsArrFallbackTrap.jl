@@ -55,7 +55,7 @@ function methodsbetween(t::Pair{<:Type,<:Type}, f::Base.Callable, meths=Method[]
     return meths
 end
 
-function _methodsbetween(t::Pair{<:Type,<:Type}, m::Module)
+function methodsbetween(t::Pair{<:Type,<:Type}, m::Module)
     meths = Method[]
     for nm in names(m)
         if isdefined(m, nm)
@@ -68,12 +68,10 @@ function _methodsbetween(t::Pair{<:Type,<:Type}, m::Module)
     return unique(meths)
 end
 
-methodsbetween(t::Pair{<:Type,<:Type}, m::Module) = _methodsbetween(t, m)
-
 function methodsbetween(t::Pair{<:Type,<:Type})
     meths = Method[]
     for mod in Base.loaded_modules_array()
-        append!(meths, _methodsbetween(t, mod))
+        append!(meths, methodsbetween(t, mod))
     end
     return unique(meths)
 end
